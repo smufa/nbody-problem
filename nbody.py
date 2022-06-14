@@ -16,8 +16,8 @@ class universe:
         for i in range(self.positions.shape[0]):
             positions_temp = positions
             mass_temp = self.mass
-            positions_temp.remove(positions[i])
-            mass_temp.remove(self.mass[i])
+            positions_temp = np.delete(positions_temp, i, 0)
+            mass_temp = np.delete(mass_temp, i, 0)
             new_positions, new_mass = bh.main(positions_temp, mass_temp, positions[i], 1)
 
             temp = []
