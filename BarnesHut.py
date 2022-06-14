@@ -129,12 +129,8 @@ def main(points_positions, points_masses, start_point, theta):
 
     # print("useful points positions: \n{positions}\nmasses: \n{masses}".format(positions=useful_points_positions,
     #                                                                          masses=useful_points_masses))
-    # get force vectors of useful points
-    force_vectors = get_force_vectors(start_point, useful_points_positions, useful_points_masses)
 
-    # get net force from force vectors
-    net_force = get_net_force(force_vectors)
-    print("net force: {}".format(net_force))
+    return useful_points_positions, useful_points_masses
 
 
 class Cell:
@@ -254,6 +250,7 @@ if __name__ == "__main__":
     start_point1 = [0, 0, 0]
     start_point2 = [10, 10, 10]
     start_point3 = [0.125, 0.125, 0.125]
+    start_point4 = [0.55555555556, 0.55555555556, 0.55555555556]
 
     theta1 = 1
 
@@ -295,4 +292,4 @@ if __name__ == "__main__":
     masses5 = [1, 5, 1, 5]
 
     # print("Input array: \n", input_array1, "\n\n")
-    main(input_array3, masses3, start_point3, theta1)
+    main(input_array4, masses4, start_point1, theta1)
