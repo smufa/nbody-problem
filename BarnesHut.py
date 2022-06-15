@@ -1,8 +1,6 @@
 import numpy as np
 import math
 
-all_cells = {}
-
 
 def get_net_force(force_vectors):
     net_force = np.sum(force_vectors, axis=0)
@@ -19,7 +17,7 @@ def get_force_vectors(start_point, points_positions, points_masses):
     return weighted_vectors
 
 
-def find_useful_points(parent_index, start_point, theta, useful_points_positions, useful_points_masses):
+def find_useful_points(parent_index, start_point, theta, useful_points_positions, useful_points_masses, all_cells):
     for i in range(1, 9):
         index = int('{parent_index}{new_cell_index}'.format(parent_index=parent_index,
                                                             new_cell_index=i))
@@ -52,6 +50,8 @@ def find_useful_points(parent_index, start_point, theta, useful_points_positions
 
 
 def main(points_positions, points_masses, start_point, theta):
+    global all_cells
+    all_cells = {}
     num_of_points, _ = points_positions.shape
 
     # ----- CONSTRUCT OCTREE -----
@@ -64,7 +64,7 @@ def main(points_positions, points_masses, start_point, theta):
 
     # create root cell
     root_cell = Cell(0, limits, None)
-    all_cells[0] = root_cell
+    all_cells[0] = all_cells.get(0, Cell(cell_index=0, limits=limits, parent_index=None))
 
     # add points
     for point in range(num_of_points):
@@ -125,7 +125,7 @@ def main(points_positions, points_masses, start_point, theta):
 
     # find useful points
     useful_points_positions, useful_points_masses = find_useful_points(0, start_point, theta, useful_points_positions,
-                                                                       useful_points_masses)
+                                                                       useful_points_masses, all_cells)
 
     # print("useful points positions: \n{positions}\nmasses: \n{masses}".format(positions=useful_points_positions,
     #                                                                          masses=useful_points_masses))
@@ -284,6 +284,10 @@ if __name__ == "__main__":
     input_array5 = np.array(
         [[10, 10, 10], [9.8, 9.8, 9.8], [-10, -10, -10], [-9.8, -9.8, -9.8]])
 
+    input_array6 = np.array([[3.50183652, 2.83372761, -2.52084241], [3.71375405, 4.88892666, -3.42116649],
+                             [3.54640005, 3.53167423, 1.97698521]])
+
+    masses6 = [1., 0.2, 0.2]
     masses = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     masses1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     masses2 = [1, 1, 1, 1, 1, 1, 1, 1]
@@ -292,4 +296,5 @@ if __name__ == "__main__":
     masses5 = [1, 5, 1, 5]
 
     # print("Input array: \n", input_array1, "\n\n")
-    main(input_array4, masses4, start_point1, theta1)
+    ena, dva = main(input_array6, masses6, start_point1, theta1)
+    print(ena, dva)

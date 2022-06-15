@@ -14,6 +14,7 @@ class universe:
         acceleration = []
 
         for i in range(self.positions.shape[0]):
+            new_positions = new_mass = []
             positions_temp = positions
             mass_temp = self.mass
             positions_temp = np.delete(positions_temp, i, 0)
@@ -22,11 +23,9 @@ class universe:
 
             temp = []
             for j in range(new_positions.shape[0]):
-                if i == j:
-                    continue
                 temp.append(
-                    (mass_temp[j] / np.linalg.norm(new_positions[j] - new_positions[i])) ** 3 * (
-                                new_positions[j] - new_positions[i]))
+                    (mass_temp[j] / np.linalg.norm(new_positions[j] - positions[i])) ** 3 * (
+                                new_positions[j] - positions[i]))
             acceleration.append(np.sum(temp, axis=0))
         return np.array(acceleration)
 
