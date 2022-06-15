@@ -23,9 +23,14 @@ class universe:
 
             temp = []
             for j in range(new_positions.shape[0]):
-                temp.append(
-                    (mass_temp[j] / np.linalg.norm(new_positions[j] - positions[i])) ** 3 * (
-                                new_positions[j] - positions[i]))
+                if np.linalg.norm(new_positions[j] - positions[i]) < 1:
+                    temp.append(
+                        (mass_temp[j] / 1) * (
+                                    new_positions[j] - positions[i]))
+                else:
+                    temp.append(
+                        (mass_temp[j] / np.linalg.norm(new_positions[j] - positions[i]) ** 3) * (
+                                    new_positions[j] - positions[i]))
             acceleration.append(np.sum(temp, axis=0))
         return np.array(acceleration)
 
@@ -61,7 +66,7 @@ if __name__ == '__main__':
         ax.clear()
         fig = plt.figure()
         # ax = fig.add_subplot(projection='3d')
-        uni.simulate(0.2)
+        uni.simulate(0.02)
         ax.scatter(uni.positions[:, 0], uni.positions[:, 1], uni.positions[:, 2])
         # plt.waitforbuttonpress()
 
