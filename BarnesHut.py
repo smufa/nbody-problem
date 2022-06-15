@@ -2,21 +2,6 @@ import numpy as np
 import math
 
 
-def get_net_force(force_vectors):
-    net_force = np.sum(force_vectors, axis=0)
-
-    return net_force
-
-
-def get_force_vectors(start_point, points_positions, points_masses):
-    original_vectors = points_positions - start_point
-    weighted_vectors = []
-    for i in range(len(original_vectors)):
-        weighted_vectors.append(original_vectors[i] * points_masses[i])
-
-    return weighted_vectors
-
-
 def find_useful_points(parent_index, start_point, theta, useful_points_positions, useful_points_masses):
     for i in range(1, 9):
         index = int('{parent_index}{new_cell_index}'.format(parent_index=parent_index,
@@ -60,8 +45,6 @@ def main(points_positions, points_masses, start_point, theta):
     min_xyz = np.min(points_positions, axis=0)
     max_xyz = np.max(points_positions, axis=0)
     limits = np.array([min_xyz, max_xyz])
-    # print("min_xyz: ", min_xyz, ", max_xyz: ", max_xyz)
-    # print("limits: ", limits)
 
     # create root cell
     root_cell = Cell(0, limits, None)
@@ -71,48 +54,12 @@ def main(points_positions, points_masses, start_point, theta):
     for point in range(num_of_points):
         root_cell.add_point_to_cell(point_position=points_positions[point], point_mass=points_masses[point])
 
-    """
-    # add first point
-    print("point: {}".format(points_positions[0]))
-    root_cell.add_point_to_cell(points_positions[0])
-    print("all_cells: {}".format(all_cells))
-
-    # add second point
-    print("point: {}".format(points_positions[1]))
-    root_cell.add_point_to_cell(points_positions[1])
-    
-
-    for i in all_cells.keys():
-        print("cell: {i}, point_inside: {p}, point: {c}, \n"
-              "cog_xyz: {cog_xyz}, cog_mass: {cog_mass}".format(i=i,
-                                                                p=all_cells.get(i).point_inside,
-                                                                c=all_cells.get(i).point_inside_position,
-                                                                cog_xyz=all_cells.get(i).cog_xyz,
-                                                                cog_mass=all_cells.get(i).cog_mass))
-
-    print("\nnumber of cells: {}".format(len(all_cells)))
-    print("\n-------------------------------------\n")
-    """
-
     # remove cells with no points
     keys = list(all_cells.keys())
     for index in keys:
         cell = all_cells.get(index)
         if cell.cog_xyz is None:
             all_cells.pop(index)
-    """
-    for i in all_cells.keys():
-        print("cell: {i}, point_inside: {p}, point: {c}, \n"
-              "cog_xyz: {cog_xyz}, cog_mass: {cog_mass}, \n"
-              "limits: \n{limits}\n".format(i=i,
-                                            p=all_cells.get(i).point_inside,
-                                            c=all_cells.get(i).point_inside_position,
-                                            cog_xyz=all_cells.get(i).cog_xyz,
-                                            cog_mass=all_cells.get(i).cog_mass,
-                                            limits=all_cells.get(i).limits))
-
-    print("\nnumber of cells: {}".format(len(all_cells)))
-    """
 
     # ----- ESTIMATE FORCES -----
     # start_point = point where we want to calculate the sum of forces
@@ -128,9 +75,6 @@ def main(points_positions, points_masses, start_point, theta):
     useful_points_positions, useful_points_masses = find_useful_points(0, start_point, theta, useful_points_positions,
                                                                        useful_points_masses)
 
-    # print("useful points positions: \n{positions}\nmasses: \n{masses}".format(positions=useful_points_positions,
-    #                                                                          masses=useful_points_masses))
-
     return useful_points_positions, useful_points_masses
 
 
@@ -143,7 +87,6 @@ class Cell:
         self.parent_index = parent_index
         self.width = math.fabs(limits[0, 0] - limits[1, 0])
         self.center_xyz = np.mean(self.limits, axis=0)
-        # self.level = parent_level + 1
         # self.print_index_and_limits()
         self.point_inside = False
         self.point_inside_position = None
@@ -156,9 +99,6 @@ class Cell:
         min_x, min_y, min_z = self.limits[0, :]
         middle_x, middle_y, middle_z = np.mean(self.limits, axis=0)
         max_x, max_y, max_z = self.limits[1, :]
-        # print("min_x: ", min_x, ", min_y: ", min_y, ", min_z:", min_z)
-        # print("middle_x: ", middle_x, ", middle_y: ", middle_y, ", middle_z:", middle_z)
-        # print("max_x: ", max_x, ", max_y: ", max_y, ", max_z:", max_z)
 
         new_limits = np.array([[[min_x, min_y, middle_z], [middle_x, middle_y, max_z]],
                                [[middle_x, min_y, middle_z], [max_x, middle_y, max_z]],
@@ -172,12 +112,8 @@ class Cell:
             # setting indexes for the subcells (concatenated parent index and child number 1-8)
             index = int('{parent_index}{new_cell_index}'.format(parent_index=self.cell_index,
                                                                 new_cell_index=child_number))
-            # print("limits[{}]".format(i-1))
-            # print("index : {}".format(index))
             all_cells[index] = all_cells.get(index, Cell(cell_index=index, limits=new_limits[child_number - 1],
                                                          parent_index=self.cell_index))
-
-        # print("all_cells: {}".format(all_cells))
 
         self.has_children = True
 
@@ -208,8 +144,6 @@ class Cell:
                                                                       new_cell_index=child_number))
             child = all_cells.get(child_index)
 
-            # print("child.limits: {}".format(child.limits))
-
             point_x, point_y, point_z = point_position
             child_min_x, child_min_y, child_min_z = child.limits[0, :]
             child_max_x, child_max_y, child_max_z = child.limits[1, :]
@@ -233,8 +167,6 @@ class Cell:
             # setting indexes for the subcells (concatenated parent index and child number 1-8)
             index = int('{parent_index}{new_cell_index}'.format(parent_index=self.cell_index,
                                                                 new_cell_index=child_number))
-            # print("limits[{}]".format(i-1))
-            # print("index : {}".format(index))
             cell = all_cells.get(index)
             if cell.cog_xyz is not None:
                 cog_x += cell.cog_mass * cell.cog_xyz[0]
@@ -306,6 +238,5 @@ if __name__ == "__main__":
     positions = np.array([randrange(n, xlow, xhigh), randrange(n, ylow, yhigh), randrange(n, zlow, zhigh)]).T
     masses7 = np.array(randrange(n, xlow, xhigh))
 
-    # print("Input array: \n", input_array1, "\n\n")
-    ena, dva = main(positions, masses7, start_point1, theta1)
-    print(ena, dva)
+    positions_final, masses_final = main(positions, masses7, start_point1, theta1)
+    print(positions_final, masses_final)
