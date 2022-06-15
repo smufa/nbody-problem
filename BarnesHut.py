@@ -232,8 +232,10 @@ if __name__ == "__main__":
     xlow, xhigh = 15, 20
     n = 200
 
+
     def randrange(n, vmin, vmax):
         return (vmax - vmin) * np.random.rand(n) + vmin
+
 
     positions = np.array([randrange(n, xlow, xhigh), randrange(n, ylow, yhigh), randrange(n, zlow, zhigh)]).T
     masses7 = np.array(randrange(n, xlow, xhigh))
