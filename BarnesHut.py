@@ -17,7 +17,7 @@ def get_force_vectors(start_point, points_positions, points_masses):
     return weighted_vectors
 
 
-def find_useful_points(parent_index, start_point, theta, useful_points_positions, useful_points_masses, all_cells):
+def find_useful_points(parent_index, start_point, theta, useful_points_positions, useful_points_masses):
     for i in range(1, 9):
         index = int('{parent_index}{new_cell_index}'.format(parent_index=parent_index,
                                                             new_cell_index=i))
@@ -125,7 +125,7 @@ def main(points_positions, points_masses, start_point, theta):
 
     # find useful points
     useful_points_positions, useful_points_masses = find_useful_points(0, start_point, theta, useful_points_positions,
-                                                                       useful_points_masses, all_cells)
+                                                                       useful_points_masses)
 
     # print("useful points positions: \n{positions}\nmasses: \n{masses}".format(positions=useful_points_positions,
     #                                                                          masses=useful_points_masses))
@@ -296,5 +296,5 @@ if __name__ == "__main__":
     masses5 = [1, 5, 1, 5]
 
     # print("Input array: \n", input_array1, "\n\n")
-    ena, dva = main(input_array6, masses6, start_point1, theta1)
+    ena, dva = main(input_array4, masses4, start_point1, theta1)
     print(ena, dva)
