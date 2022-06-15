@@ -45,11 +45,13 @@ if __name__ == '__main__':
     zlow, zhigh = -5, 5
     ylow, yhigh = 0, 5
     xlow, xhigh = 0, 5
-    n = 3
+    mlow, mhigh = 1, 10
+    n = 20
     global positions
     positions = np.array([randrange(n, xlow, xhigh), randrange(n, ylow, yhigh), randrange(n, zlow, zhigh)]).T
+    mass = np.array(randrange(n, mlow, mhigh))
     global uni
-    uni = universe(positions, np.zeros((n, 3)), np.array([1, 0.2, 0.2]))
+    uni = universe(positions, np.zeros((n, 3)), mass)
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     ax.set(xlim=[xlow, xhigh], ylim=[ylow, yhigh], zlim=[zlow, zhigh])

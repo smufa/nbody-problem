@@ -52,6 +52,7 @@ def find_useful_points(parent_index, start_point, theta, useful_points_positions
 def main(points_positions, points_masses, start_point, theta):
     global all_cells
     all_cells = {}
+    points_masses = points_masses.T
     num_of_points, _ = points_positions.shape
 
     # ----- CONSTRUCT OCTREE -----
@@ -288,13 +289,23 @@ if __name__ == "__main__":
                              [3.54640005, 3.53167423, 1.97698521]])
 
     masses6 = [1., 0.2, 0.2]
-    masses = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    masses = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     masses1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     masses2 = [1, 1, 1, 1, 1, 1, 1, 1]
     masses3 = [3, 2, 3]
     masses4 = [1, 1, 1, 1, 1]
     masses5 = [1, 5, 1, 5]
+    zlow, zhigh = 5, 10
+    ylow, yhigh = 10, 15
+    xlow, xhigh = 15, 20
+    n = 200
+
+    def randrange(n, vmin, vmax):
+        return (vmax - vmin) * np.random.rand(n) + vmin
+
+    positions = np.array([randrange(n, xlow, xhigh), randrange(n, ylow, yhigh), randrange(n, zlow, zhigh)]).T
+    masses7 = np.array(randrange(n, xlow, xhigh))
 
     # print("Input array: \n", input_array1, "\n\n")
-    ena, dva = main(input_array4, masses4, start_point1, theta1)
+    ena, dva = main(positions, masses7, start_point1, theta1)
     print(ena, dva)
